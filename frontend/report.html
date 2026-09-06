@@ -1,0 +1,20 @@
+<!doctype html>
+<html lang="zh-CN">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="智枢 OmniHub RAG 系统项目方案：GitHub 知识库、Python 工作流与可配置模型。"><title>智枢 OmniHub · RAG 项目方案</title><link rel="stylesheet" href="./style.css"></head>
+<body class="report-body"><main class="report-wrap">
+  <header class="report-hero"><div class="eyebrow">OMNIHUB / PROJECT BRIEF</div><h1>智枢 OmniHub<br>让企业知识成为工作的依据。</h1><p>以 GitHub 仓库为知识源，以 RAG 为核心，将文档问答与七类办公场景接入可维护的 Python 工作流。</p><div class="report-actions"><a href="./index.html">进入知识工作台 →</a><a href="https://github.com/XRH-RGB/zhengli" target="_blank" rel="noopener noreferrer">目标代码仓库 ↗</a></div></header>
+  <section class="report-section panel"><div class="eyebrow">01 / WHY RAG</div><h2>从分散资料，走向可追溯的知识工作台</h2><p>原方案围绕办公场景展示工作流。改造后，将“仓库资料检索—证据组装—任务生成—来源查看”作为统一主线。文档问答是首要入口，会议、报告、申请和培训等场景复用同一套知识检索能力。</p><p class="muted">保留原文件的智枢品牌与蓝紫色视觉方向；旧平台工作流截图不作为新系统实现的证明。</p></section>
+  <section class="report-section panel"><div class="eyebrow">02 / ARCHITECTURE</div><h2>两条 Python 链路，一个知识底座</h2><h3>资料入库</h3><div class="architecture-flow"><span>GitHub 仓库 / 指定版本</span><span>文本筛选</span><span>保留行号分块</span><span>批量嵌入</span><span>SQLite 快照</span></div><h3>任务回答</h3><div class="architecture-flow"><span>问题 + 选定知识库</span><span>向量与 BM25 检索</span><span>融合排序</span><span>Python 场景函数</span><span>回答 + 文件引用</span></div><p class="muted">回答模型与嵌入模型分别配置。引用链接固定到同步时的提交；失败的同步不会覆盖之前的索引。</p></section>
+  <section class="report-section panel"><div class="eyebrow">03 / WORKFLOWS</div><h2>七类场景，七个 Python 模块</h2><div class="table-wrap"><table class="report-table"><thead><tr><th>场景</th><th>知识依据与输出</th><th>源码</th></tr></thead><tbody>
+    <tr><td>知识检索问答</td><td>根据文档和代码回答，附文件与行号。</td><td><code>documents.py</code></td></tr>
+    <tr><td>知识出题与答题反馈</td><td>从知识库出题，附参考答案或学习反馈。</td><td><code>exam.py</code></td></tr>
+    <tr><td>会议纪要整理</td><td>结合会议文字和项目资料，提取决议与待办。</td><td><code>meeting.py</code></td></tr>
+    <tr><td>日报与周报草稿</td><td>结合工作记录及报告规范生成草稿。</td><td><code>report.py</code></td></tr>
+    <tr><td>OA 制度与申请辅助</td><td>检索制度，整理字段与申请草稿。</td><td><code>oa.py</code></td></tr>
+    <tr><td>群消息整理</td><td>整理粘贴消息，提取主题和待办。</td><td><code>messages.py</code></td></tr>
+    <tr><td>知识学习与培训建议</td><td>按学习目标推荐仓库材料和练习。</td><td><code>training.py</code></td></tr>
+  </tbody></table></div><p class="muted">本版接收文字材料。录音转写、飞书实时接入、消息推送和 OA 自动提交未接入；相关场景输出供人工核对的草稿。</p></section>
+  <section class="report-section panel"><div class="eyebrow">04 / IMPLEMENTATION</div><h2>以 RAG 为中心的实现边界</h2><ul class="report-list"><li>前端沿用 HTML / CSS / JavaScript，无需前端构建工具；业务编排全部在 Python 后端。</li><li>FastAPI 提供知识源管理、手动同步、工作流执行和源码查看接口。</li><li>SQLite 保存完整索引快照；向量相似度与 BM25 在 Python 中计算，适合单机小型知识库。</li><li>只读取仓库文本，不运行 GitHub 中的程序；知识内容不能注册或覆盖工作流。</li><li>本版默认仅配置模式，模型调用、仓库同步和工作流执行需要显式开启。</li></ul></section>
+  <section class="report-section panel"><div class="eyebrow">05 / NEXT STEPS</div><h2>验证后再扩展</h2><p>首先用真实仓库验证索引、中文检索、引用准确性和各场景输出。知识量扩大后，再迁移向量数据库、增加后台任务队列与多用户权限；录音、飞书及 OA 接口可作为后续独立接入项。</p><div class="notice">当前交付为待运行源码：未安装依赖、未启动系统、未调用模型。功能效果和兼容性仍需运行验证。</div></section>
+  <footer class="footer"><span>智枢 OmniHub · RAG 方案</span><span>源自用户提供的 HTML.zip 改造</span></footer>
+</main></body></html>
