@@ -27,7 +27,7 @@ function notice(message, error = false) {
 }
 
 async function api(path, options = {}) {
-  if (location.protocol === "file:") throw new Error("当前为本地静态文件。界面可查看，数据功能需在你准备运行后启动 Python 服务。");
+  if (location.protocol === "file:") throw new Error("你正在直接查看 HTML 文件。请按使用说明启动服务，再从 http://127.0.0.1:8000 打开工作台。");
   const response = await fetch(`/api${path}`, {
     ...options, headers: { "Content-Type": "application/json", ...(state.key ? { "X-API-Key": state.key } : {}), ...options.headers },
   });
@@ -94,7 +94,7 @@ function renderRepositories() {
     }
   }
   $("repositories").replaceChildren();
-  if (!repos.length) $("repositories").append(element("div", "panel empty", "还没有知识源。添加 GitHub 仓库后，可在开启执行模式时同步。"));
+  if (!repos.length) $("repositories").append(element("div", "panel empty", "还没有添加资料。在上方填写仓库地址，保存后点击“同步知识库”。"));
   for (const repo of repos) {
     const card = element("article", "panel repository-card");
     const header = element("header");
@@ -110,7 +110,7 @@ function renderRepositories() {
     const sync = element("button", "button secondary small", "同步知识库");
     sync.dataset.sync = repo.id;
     sync.addEventListener("click", () => action(sync, "正在同步…", async () => {
-      notice("正在读取仓库并生成嵌入，可能需要几分钟，请保持页面打开。");
+      notice("正在读取仓库并建立知识索引，可能需要几分钟，请保持页面打开。");
       const result = await api(`/repositories/${repo.id}/sync`, { method: "POST" });
       state.repositories = await api("/repositories"); renderRepositories();
       const skips = result.skipped.length ? ` 跳过 ${result.skipped.length} 个文件：${result.skipped.map(s => `${s.path}（${s.reason}）`).join("；")}` : "";
@@ -198,12 +198,12 @@ async function refresh() {
     $("embedding-model").textContent = status.embedding_model;
     $("github-config").textContent = status.github_token_configured ? "服务端已配置" : "未配置 · 仅公开仓库";
     renderRepositories(); renderWorkflows();
-    notice(status.execution_enabled ? "服务已连接。添加并同步知识库后即可提问。" : "当前为配置模式：可保存知识源、查看源码；仓库同步、模型调用和工作流执行均已关闭。");
+    notice(status.execution_enabled ? "服务已连接。添加并同步知识库后即可提问。" : "当前为配置模式。要同步资料或生成内容，请在 .env 中设置 EXECUTION_ENABLED=true，保存并重启服务。");
   } catch (error) {
     state.connected = false; state.enabled = false;
     $("connection").textContent = "未连接服务"; $("connection").className = "status neutral";
     state.workflows = offlineWorkflows; renderWorkflows();
-    notice(error.message || "未能连接 Python 服务。当前只可查看界面，尚未执行任何工作流。", true);
+    notice(error.message || "暂时连不上服务。请检查服务窗口是否仍在运行，再点击“刷新状态”。", true);
   }
   updateButtons();
 }
@@ -214,7 +214,7 @@ $("repository-form").addEventListener("submit", event => {
     const globs = $("repo-globs").value.split(/[,，]/).map(s => s.trim()).filter(Boolean);
     await api("/repositories", { method: "POST", body: JSON.stringify({ url: $("repo-url").value.trim(), branch: $("repo-branch").value.trim(), include_globs: globs }) });
     state.repositories = await api("/repositories"); renderRepositories();
-    notice("知识源已保存，尚未同步或调用模型。"); $("repo-url").value = "";
+    notice("仓库已保存。接下来点击仓库卡片上的“同步知识库”，把资料加入知识库。"); $("repo-url").value = "";
   });
 });
 
@@ -237,7 +237,7 @@ $("workflow-form").addEventListener("submit", event => {
     const workflow = state.workflow;
     notice(`正在处理：${workflow.title}。`);
     const result = await api(`/workflows/${workflow.id}/run`, { method: "POST", body: JSON.stringify({ query: $("workflow-query").value, material: $("workflow-material").value, repository_ids: ids, top_k: 6 }) });
-    renderResult(result, true); notice(`${workflow.title}已生成结果，请人工核对。`);
+    renderResult(result, true); notice(`${workflow.title}已完成。请核对内容，再复制到需要的位置。`);
   });
 });
 
