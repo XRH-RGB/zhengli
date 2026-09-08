@@ -3,15 +3,15 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="智枢 OmniHub：基于 GitHub 知识库的 RAG 工作台与 Python 工作流。">
-  <title>智枢 OmniHub · 知识工作台</title>
+  <meta name="description" content="RAG 知识工作台：基于 GitHub 知识库的 RAG 工作台与 Python 工作流。">
+  <title>RAG 知识工作台</title>
   <link rel="stylesheet" href="./style.css">
   <script src="./app.js" defer></script>
 </head>
 <body>
   <a class="skip" href="#main">跳到主要内容</a>
   <aside class="sidebar">
-    <a class="brand" href="#chat"><span class="brand-mark">枢</span><span>智枢 <small>OMNIHUB / RAG</small></span></a>
+    <a class="brand" href="#chat"><span class="brand-mark" aria-hidden="true">▦</span><span>知识工作台 <small>RAG WORKSPACE</small></span></a>
     <div class="nav-label">知识工作空间</div>
     <nav aria-label="主导航">
       <a href="#chat" class="nav-item active" aria-current="page"><span>◈</span>知识问答</a>
@@ -19,10 +19,10 @@
       <a href="#workflows" class="nav-item"><span>⌘</span>Python 工作流</a>
       <a href="#settings" class="nav-item"><span>⚙</span>模型与运行配置</a>
     </nav>
-    <div class="sidebar-bottom"><a href="#settings">使用说明 →</a><a href="./report.html" target="_blank" rel="noopener">了解智枢 ↗</a><a href="https://github.com/XRH-RGB/zhengli" target="_blank" rel="noopener noreferrer">项目源码 ↗</a><p>知识有出处，工作有依据。</p></div>
+    <div class="sidebar-bottom"><a href="#settings">使用说明 →</a><a href="./report.html" target="_blank" rel="noopener">系统介绍 ↗</a><a href="https://github.com/XRH-RGB/zhengli" target="_blank" rel="noopener noreferrer">项目源码 ↗</a><p>知识有出处，工作有依据。</p></div>
   </aside>
   <div class="shell">
-    <header class="topbar"><div><span class="eyebrow">OMNIHUB</span><span class="top-separator">/</span><span id="page-label">知识问答</span></div><div class="top-actions"><span id="connection" class="status neutral">尚未连接</span><button id="refresh" class="button small secondary" type="button">刷新状态</button></div></header>
+    <header class="topbar"><div><span class="eyebrow">RAG WORKSPACE</span><span class="top-separator">/</span><span id="page-label">知识问答</span></div><div class="top-actions"><span id="connection" class="status neutral">尚未连接</span><button id="refresh" class="button small secondary" type="button">刷新状态</button></div></header>
     <main id="main">
       <div id="notice" class="notice" role="status">正在连接服务，请稍候…</div>
       <section id="view-chat" class="view">
@@ -48,6 +48,12 @@
           <div class="section-heading"><div><span class="section-kicker">读懂结果</span><h2 id="read-answer-title">回答之后，再看这三处</h2></div><p>来源帮助你核对内容，最终判断仍要结合原文。</p></div>
           <div class="explain-grid"><article class="explain-card"><span class="step-number">01</span><h3>看回答是否切题</h3><p>检查它是否回答了你的问题。缺少资料时，可以缩小问题范围，或补充相关文档后再问。</p></article><article class="explain-card"><span class="step-number">02</span><h3>展开资料片段</h3><p>对照结论与原文，重点核对数字、条件和例外。检索排序分表示片段排序，不是答案的正确概率。</p></article><article class="explain-card"><span class="step-number">03</span><h3>确认文件版本</h3><p>点击来源链接查看同步时的文件和行号。资料更新后，先重新同步，再获取新的回答。</p></article></div>
         </section>
+        <section class="panel result-panel" aria-labelledby="question-explained"><div class="panel-heading"><h2 id="question-explained">再多了解一点</h2></div>
+          <details class="usage-help"><summary>输入问题后，系统具体做了什么？</summary><p>先在选中的知识库中，结合语义相近程度和关键词查找片段；再挑选相关内容交给回答模型。模型同时看到你的问题、任务要求和这些片段，最后返回回答与资料引用。</p><p class="muted">检索范围决定可以查哪些资料，检索片段数量决定最多参考多少条。片段不是越多越好，先用默认值，再根据来源是否相关作调整。</p></details>
+          <details class="usage-help"><summary>“知道这个词”和“找到这份资料”有什么区别？</summary><p>模型可能熟悉通用概念，但不一定知道你的项目约定。比如“如何提交申请”，需要仓库中实际的申请制度；仅有一份项目介绍，无法提供具体审批条件。</p><p class="muted">查不到时先确认资料是否存在、是否被文件规则选中、是否同步成功，再调整问题。换一种说法不能补齐缺失的事实。</p></details>
+          <details class="usage-help"><summary>同一个问题，为什么更新资料后需要重新同步？</summary><p>问答使用本地已经建立的索引，不会每次都重新读取 GitHub。仓库文件修改后，重新同步才能把新内容加入索引。来源链接固定到当次同步的版本，便于确认回答依据的是哪一份资料。</p></details>
+          <details class="usage-help"><summary>提问时需要把前面的内容再说一遍吗？</summary><p>当前每次请求独立处理，不会自动带上上一轮对话。继续追问时，请把对象和条件写完整，例如“针对刚才提到的模型更换，请说明知识库同步步骤”，并明确所指的模型和配置。</p><p class="muted">更清楚的写法是：“我将嵌入模型从 A 换成 B，服务已重启，接下来如何更新已有知识库？”其中 A、B 请替换为实际模型名。</p></details>
+        </section>
       </section>
       <section id="view-knowledge" class="view" hidden>
         <div class="page-heading"><div><div class="eyebrow">KNOWLEDGE SOURCES</div><h1>GitHub 知识库</h1><p>添加存放资料的仓库，选好文件范围，再同步到知识库。资料更新后，记得重新同步。</p></div></div>
@@ -71,6 +77,7 @@
         <div class="workspace-grid"><section class="panel"><div class="panel-heading"><h2>当前配置</h2><span class="pill" id="execution-mode">尚未连接</span></div><dl class="settings-list"><div><dt>回答模型</dt><dd id="llm-model">—</dd></div><div><dt>嵌入模型</dt><dd id="embedding-model">—</dd></div><div><dt>GitHub 令牌</dt><dd id="github-config">—</dd></div></dl><p class="muted">未填写 GitHub 令牌时可读取公开仓库，受 GitHub 匿名请求限额约束。更换嵌入模型后需重新同步知识库。</p><label for="access-key">系统访问密钥（APP_API_KEY）</label><input id="access-key" type="password" autocomplete="off" placeholder="本机未配置时可留空"><div class="form-footer"><small>只在当前页面内存中使用，刷新页面后需重新输入。</small><button id="connect" class="button secondary">连接</button></div></section><section class="panel"><div class="panel-heading"><h2>第一次使用怎么做</h2></div><ol class="setup-list"><li><b>准备环境。</b>下载并解压项目，在能看到 <code>requirements.txt</code> 的文件夹打开 PowerShell，按下方说明安装依赖。</li><li><b>填写模型。</b>复制 <code>.env.example</code> 为 <code>.env</code>，填写回答模型和嵌入模型的接口地址、名称及密钥。</li><li><b>开启运行。</b>把 <code>EXECUTION_ENABLED</code> 改为 <code>true</code>，保存配置后启动服务。</li><li><b>添加资料。</b>进入“GitHub 知识库”，填写仓库地址并保存，再点击“同步知识库”。</li><li><b>开始提问。</b>看到“已同步”且文件数大于 0 后，进入“知识问答”，选择仓库并输入问题。</li></ol><p class="notice">如果按钮不可用，先检查顶部连接状态和运行开关。修改 .env 后需要重启服务。</p></section></div>
         <section class="panel result-panel" aria-label="详细操作说明">
           <div class="panel-heading"><h2>照着步骤操作</h2></div>
+          <details class="usage-help"><summary>先分清三种密钥，避免填错位置</summary><dl class="setup-list"><dt><b>模型服务密钥</b></dt><dd>填写在 .env 的 LLM_API_KEY 和 EMBEDDING_API_KEY，用于访问回答和嵌入服务。</dd><dt><b>GitHub 令牌</b></dt><dd>填写在 .env 的 GITHUB_TOKEN，用于读取仓库。浏览器登录 GitHub 不会把登录状态传给后端。</dd><dt><b>系统访问密钥</b></dt><dd>对应 APP_API_KEY。只有设置过这一项，才需要在本页的“系统访问密钥”输入框填写相同内容。</dd></dl></details>
           <details class="usage-help" open><summary>1. 下载、配置和启动（Windows）</summary><ol class="setup-list">
             <li>在项目仓库点击 <b>Code → Download ZIP</b>，下载后解压。进入能看到 <code>app</code> 和 <code>requirements.txt</code> 的目录，在资源管理器地址栏输入 <code>powershell</code> 并按回车。</li>
             <li>确认已安装 Python 3.11 或更新版本，在窗口中逐行输入：<pre><code>python --version
@@ -101,7 +108,7 @@ notepad .env</code></pre></li>
         </section>
       </section>
     </main>
-    <footer class="footer"><span>智枢 OmniHub</span><span>GitHub 知识源 · 混合检索 · Python 工作流</span></footer>
+    <footer class="footer"><span>RAG 知识工作台</span><span>GitHub 知识源 · 混合检索 · Python 工作流</span></footer>
   </div>
 </body>
 </html>
