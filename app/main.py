@@ -29,7 +29,7 @@ async def lifespan(application):
     yield
 
 
-app = FastAPI(title="智枢 OmniHub RAG", version="1.0.0", lifespan=lifespan,
+app = FastAPI(title="RAG 知识工作台", version="1.0.0", lifespan=lifespan,
               docs_url=None, redoc_url=None, openapi_url=None)
 
 
